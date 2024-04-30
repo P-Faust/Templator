@@ -1,9 +1,7 @@
 #########################################################################################################################
 #                                                                                                                       #
 #   Beschreibung:                                                                                                       #
-#   Dieses Script ist Teil der Automatisierung der Clientzertifizierung.                                                #
-#   Das Script liest eine Excel Tabelle ein und errechnet alle benötigten Mindest-, Maximal- und Durchschnittswerte,    #
-#   welche in den Clientzertifizierungsberichten benötigt werden.                                                       #
+#   Das Script liest eine Excel Tabelle ein und errechnet alle benötigten Mindest-, Maximal- und Durchschnittswerte.    #
 #                                                                                                                       #                                                       
 #   Autor: Patrik Faust                                                                                                 #
 #                                                                                                                       #
@@ -183,3 +181,4 @@ class Roaming(Measurements):
         sheet[self.package_loss_column] = sheet[self.package_loss_column].apply(lambda y: round(y, 2))
         fixed_sheet = sheet
         return fixed_sheet
+
