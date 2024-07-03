@@ -95,11 +95,13 @@ class WordWriter(object):
         self.doc.render(context)
         self.doc.save("generated_doc.docx")
 
+    # Ändert die englische Notation zur deutschen und überprüft das Zahlen wie 1,0 als 1 dargestellt werden ohne Zahlen wie 1,08 zu verändern.
     def _notation_helper(self, value_to_notate):
-        regex_filter = "\d,0\d"
+        regex_filter = "\d+,0\d"
         notated_value = str(value_to_notate).replace(".", ",")
         if (re.match(regex_filter, notated_value)):
             return notated_value
         else:
+            notated_value = str(notated_value).split(".0",1)[0]
             notated_value = str(notated_value).replace(",0", "")
             return notated_value

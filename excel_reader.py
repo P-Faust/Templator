@@ -6,7 +6,6 @@
 #   Autor: Patrik Faust                                                                                                 #
 #                                                                                                                       #
 #########################################################################################################################
-
 import pandas as pd 
 
 class Measurements(object):
@@ -29,7 +28,8 @@ class Measurements(object):
     def _get_index_2_4(self, sheet):
         index_list = (sheet["Unnamed: 1"].to_list())
         for x in range(len(index_list)):
-            if (index_list[x] == "IEEE 802.11a/n/ac/ax (40 MHz)"):
+            #Hier ein besserer Weg gefunden um die Zeile ab welcher 5 GHz beginnt zu identifizieren
+            if ("IEEE 802.11a" in str(index_list[x])):
                 return x
 
     def _get_sheet_2_4(self, sheet):
@@ -61,6 +61,7 @@ class Perfomance(Measurements):
     uplink_column = "Unnamed: 6"
     downlink_column = "Unnamed: 7"
     connection_time_column = "Unnamed: 8"
+    error_message = ""
 
     def __init__(self, excel_file):
         super().__init__(excel_file)
@@ -73,9 +74,12 @@ class Perfomance(Measurements):
         self.worst_case_5 = self._get_worst_case(self.sheet_5)
 
         # Verbindungsaufbauzeit Min/Max/Avg über beide Frequenzbänder
-        self.min_connection_time_2_4_5 = int(self._get_min_from_sheet(self.performance_sheet, self.connection_time_column))
-        self.max_connection_time_2_4_5 = int(self._get_max_from_sheet(self.performance_sheet, self.connection_time_column))
-        self.avg_connection_time_2_4_5 = self._get_avg_from_sheet(self.performance_sheet, self.connection_time_column)
+        try:
+            self.min_connection_time_2_4_5 = int(self._get_min_from_sheet(self.performance_sheet, self.connection_time_column))
+            self.max_connection_time_2_4_5 = int(self._get_max_from_sheet(self.performance_sheet, self.connection_time_column))
+            self.avg_connection_time_2_4_5 = self._get_avg_from_sheet(self.performance_sheet, self.connection_time_column)
+        except(TypeError, ValueError) as error:
+            raise ValueError("Möglicherweise keine Verbindungsaufbauzeit eingetragen") from error
 
         # Verbindungsaufbauzeit Min/Max/Avg im best-case in dem 2,4 GHz Frequenzband
         self.min_best_case_connection_time_2_4 = int(self._get_min_from_sheet(self.best_case_2_4, self.connection_time_column))
@@ -181,4 +185,5 @@ class Roaming(Measurements):
         sheet[self.package_loss_column] = sheet[self.package_loss_column].apply(lambda y: round(y, 2))
         fixed_sheet = sheet
         return fixed_sheet
-
+    
+#debugObj = Perfomance(r'data\0383d_v6.01.DE_(VW)_AMT_ALFAE0124_PSX_Aruba.xlsx')
